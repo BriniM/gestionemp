@@ -12,7 +12,7 @@ class Commercant(
   override def getSalaire(): Double = ventes * txCommision + getSalaireFixe()
 
   override def toString: String =
-    f"""Commercial: ${getCode}
+    f"""Commercant n: ${getCode}
        |Salaire fixe: ${getSalaireFixe}
        |Salaire: ${getSalaire}
        |Ventes: ${getVentes}""".stripMargin

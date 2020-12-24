@@ -12,7 +12,7 @@ class Administratif(
   override def getSalaire(): Double = getHrSupp() * getCoutHrSupp() + getSalaireFixe()
 
   override def toString: String =
-    f"""Administratif: ${getCode}
+    f"""Administratif n: ${getCode}
        |Salaire fixe: ${getSalaireFixe}
        |Salaire: ${getSalaire}
        |Heures supplémentaires travaillés: ${getHrSupp()}""".stripMargin

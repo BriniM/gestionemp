@@ -1,71 +1,39 @@
 package io.brinim.gestionemp
 
-import scala.annotation.tailrec
-import scala.io.StdIn
-
 object App {
-  @tailrec
   def main(args: Array[String]): Unit = {
-    println(
-      """[ajouter
-        | rechercher
-        | salaire plus haut
-        | massa salariale
-        | nombre commerciaux
-        | commercant ayant ca max]""".stripMargin)
-    print("Donner commande: ")
-    val input = StdIn.readLine.toLowerCase
-    input match {
-      case "ajouter" => {
-        print("Donner le type: [Commercant | Administratif]: ")
-        val emp = StdIn.readLine
-        if (emp.equalsIgnoreCase("commercant")) {
-          print("Donner code unique: ")
-          val code = StdIn.readInt()
+    Menu.ajouterCommande("ajouter", () => {
+      val code = Menu.question("Donner code employé: ", "^[0-9]+$")
+      val salaire = Menu.question("Donner salaire employé: ", """[0-9]+\.{0,1}[0-9]*""")
+      val typeEmp = Menu.question("Donner type employé: ", TypeEmploye)
 
-          print("Donner salaire fixe: ")
-          val salaire = StdIn.readDouble()
+      Gestion.ajouterEmploye(code.toInt, salaire.toDouble, typeEmp)
+    })
 
-          print("Donner ventes: ")
-          val ventes = StdIn.readInt()
+    Menu.ajouterCommande("rechercher", () => {
+      val code = Menu.question("Donner code: ", "^[0-9]+$")
+      println(Gestion.rechercherEmploye(code.toInt).getOrElse("Pas d'employé avec ce code"))
+    })
 
-          Gestion.ajouterEmploye(new Commercant(code, salaire, ventes))
-        }
-        else if (emp.equalsIgnoreCase("administratif")) {
-          print("Donner code unique: ")
-          val code = StdIn.readInt()
+    Menu.ajouterCommande("salaire plus haut", () => {
+      println(f"Salaire plus haut: ${Gestion.salairePlusHaut()}")
+    })
 
-          print("Donner salaire fixe: ")
-          val salaire = StdIn.readDouble()
+    Menu.ajouterCommande("masse salariale", () => {
+      println(f"La masse salariale: ${Gestion.masseSalariale()}")
+    })
 
-          print("Donner ventes: ")
-          val ventes = StdIn.readInt()
+    Menu.ajouterCommande("nombre commercants", () => {
+      println(f"Le nombre de commercants est: ${Gestion.nbCommerciaux()}")
+    })
 
-          Gestion.ajouterEmploye(new Commercant(code, salaire, ventes))
-        }
-        else println("Type employe inconnu")
-      }
-      case "rechercher" => {
-        println("Donner code: ")
-        val code = StdIn.readInt
+    Menu.ajouterCommande("commercant ayant ca max", () => {
+      println(f"Le commercant ayant max de CA est: ${Gestion.commercantAvecMaxCA()}")
+    })
 
-        println(Gestion.rechercherEmploye(code).getOrElse("Pas d'employé avec ce code"))
-      }
-      case "salaire plus haut" => {
-        println(f"Salaire plus haut: ${Gestion.salairePlusHaut}")
-      }
-      case "masse salariale" => {
-        println(f"La masse salariale: ${Gestion.masseSalariale}")
-      }
-      case "nombre commerciaux" => {
-        println(f"Le nombre de commercants est: ${Gestion.nbCommerciaux()}")
-      }
-      case "commercant ayant ca max" => {
-        println(f"Le commercant ayant max de CA est: ${Gestion.commercantAvecMaxCA}")
-      }
-      case _ => println("Commande inconnu, veuillez réssayer.")
-    }
+    Menu.ajouterCommande("exit", () => System.exit(0))
 
-    main(Array[String]())
+    Menu.loopAsync()
+    /* Possibilité de lancer un serveur HTTP ici... etc */
   }
 }
